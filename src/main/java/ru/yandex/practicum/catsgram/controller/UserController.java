@@ -21,37 +21,28 @@ public class UserController {
 
     @PostMapping
     public User postUser(@RequestBody User user) {
-        System.out.println("Зашли в POST");
-        System.out.println("Данные: " + user);
         try {
             checkNewUser(user);
         } catch (InvalidEmailException | UserAlreadyExistException exc) {
-            System.out.println("Ловим ошибки.");
             System.out.println(exc.getMessage());
             return null;
         }
-        System.out.println("Ошибки нет.");
         users.add(user);
         return user;
     }
 
     @PutMapping
     public User putUser(@RequestBody User user) {
-        System.out.println("Зашли в PUT");
-        System.out.println("Данные: " + user);
         try {
             checkNewUser(user);
         } catch (InvalidEmailException exc) {
-            System.out.println("Ловим ошибку что мыла нет.");
             System.out.println(exc.getMessage());
             return null;
         } catch (UserAlreadyExistException exc) {
-            System.out.println("Ловим ошибку что пользователь уже есть.");
             users.remove(user);
             users.add(user);
             return user;
         }
-        System.out.println("Ошибки нет.");
         users.add(user);
         return user;
     }
