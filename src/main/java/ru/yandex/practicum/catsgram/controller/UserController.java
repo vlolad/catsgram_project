@@ -1,58 +1,41 @@
 package ru.yandex.practicum.catsgram.controller;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.catsgram.exceptions.InvalidEmailException;
 import ru.yandex.practicum.catsgram.exceptions.UserAlreadyExistException;
 import ru.yandex.practicum.catsgram.model.User;
+import ru.yandex.practicum.catsgram.service.UserService;
 
-import java.util.HashSet;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
+@Slf4j
 public class UserController {
+    private final UserService userService;
 
-    private final HashSet<User> users = new HashSet<>();
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping
-    public HashSet<User> allUsers() {
-        System.out.println(users);
-        return users;
+    public Map<String, User> allUsers() {
+        log.info("Arrived GET-request at /users");
+        return userService.allUsers();
     }
 
     @PostMapping
-    public User postUser(@RequestBody User user) {
-        try {
-            checkNewUser(user);
-        } catch (InvalidEmailException | UserAlreadyExistException exc) {
-            System.out.println(exc.getMessage());
-            return null;
-        }
-        users.add(user);
-        return user;
+    public User create(@RequestBody User user) throws UserAlreadyExistException, InvalidEmailException {
+        log.debug("Arrived POST-request at /users");
+        return userService.create(user);
     }
 
     @PutMapping
-    public User putUser(@RequestBody User user) {
-        try {
-            checkNewUser(user);
-        } catch (InvalidEmailException exc) {
-            System.out.println(exc.getMessage());
-            return null;
-        } catch (UserAlreadyExistException exc) {
-            users.remove(user);
-            users.add(user);
-            return user;
-        }
-        users.add(user);
-        return user;
-    }
-
-    private void checkNewUser(User user) throws InvalidEmailException, UserAlreadyExistException {
-        if (user.getEmail().isBlank() || user.getEmail() == null) {
-            throw new InvalidEmailException("There is no email in request body.");
-        }
-        if (users.contains(user)) {
-            throw new UserAlreadyExistException("User with such Email is already exists.");
-        }
+    public User put(@RequestBody User user) throws InvalidEmailException {
+        log.debug("Arrived PUT-request at /users");
+        return userService.put(user);
     }
 }
