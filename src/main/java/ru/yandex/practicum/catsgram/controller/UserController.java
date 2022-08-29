@@ -38,4 +38,9 @@ public class UserController {
         log.debug("Arrived PUT-request at /users");
         return userService.put(user);
     }
+
+    @GetMapping("/user/{userMail}")
+    public User getUser(@PathVariable("userMail") String userMail){
+        return userService.findUserByEmail(userMail);
+    }
 }

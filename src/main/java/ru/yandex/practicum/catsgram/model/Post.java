@@ -1,8 +1,19 @@
 package ru.yandex.practicum.catsgram.model;
 
+
 import java.time.Instant;
 
 public class Post {
+
+    private Integer id;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     private final String author; // автор
     private final Instant creationDate = Instant.now(); // дата создания
