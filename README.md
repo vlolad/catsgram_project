@@ -1,1 +1,3 @@
-# module2_catsgram
+# Simple image server
+
+Not for usage
